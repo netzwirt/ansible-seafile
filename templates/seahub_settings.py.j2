@@ -1,0 +1,53 @@
+# -*- coding: utf8 -*-
+
+"""
+{{ ansible_managed }}
+"""
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': '{{ seafile_database_prefix }}seahub',
+        'USER': '{{ seafile_mysql_user }}',
+        'PASSWORD': '{{ seafile_mysql_password }}',
+        'HOST': '{{ seafile_mysql_host }}',
+        'PORT': '{{ seafile_mysql_port }}',
+        'OPTIONS': {
+            'init_command': 'SET storage_engine=INNODB',
+        }
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+    'LOCATION': '127.0.0.1:11211',
+    }
+}
+
+EMAIL_USE_TLS                       = False
+EMAIL_HOST                          = 'localhost'
+EMAIL_HOST_USER                     = ''
+EMAIL_HOST_PASSWORD                 = ''
+EMAIL_PORT                          = '25'
+DEFAULT_FROM_EMAIL                  = '{{ seafile_admin_email }}'
+SERVER_EMAIL                        = 'EMAIL_HOST_USER'
+
+
+TIME_ZONE                           = '{{ seafile_timezone }}'
+SITE_BASE                           = '{{ seafile_service_url  }}'
+SITE_NAME                           = '{{ seafile_organisation }}'
+SITE_TITLE                          = '{{ seafile_organisation }}'
+SITE_ROOT                           = '/'
+USE_PDFJS                           = True
+ENABLE_SIGNUP                       = False
+ACTIVATE_AFTER_REGISTRATION         = False
+SEND_EMAIL_ON_ADDING_SYSTEM_MEMBER  = False
+SEND_EMAIL_ON_RESETTING_USER_PASSWD = False
+CLOUD_MODE                          = False
+FILE_PREVIEW_MAX_SIZE               = 30 * 1024 * 1024
+SESSION_COOKIE_AGE                  = 60 * 60 * 24 * 7 * 2
+SESSION_SAVE_EVERY_REQUEST          = False
+SESSION_EXPIRE_AT_BROWSER_CLOSE     = True
+
+FILE_SERVER_ROOT                    = '{{ seafile_file_server_root }}'

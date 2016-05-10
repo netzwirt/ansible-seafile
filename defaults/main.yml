@@ -1,0 +1,48 @@
+---
+# defaults file for netzwirt.seafile
+# path on ansible machine where generated passwords will be stored
+seafile_local_storage_path: "{{ inventory_dir }}/storage/seafile"
+
+
+seafile_version: '5.1.1'
+seafile_admin_email: "seafile@{{ inventory_hostname }}"
+seafile_admin_password: "{{ lookup('password', seafile_local_storage_path + '/admin_pw length=9') }}"
+
+seafile_user: seafile
+seafile_group: seafile
+seafile_organisation: Seafile
+seafile_home_path: /opt/seafile
+
+
+# mysql settings
+seafile_mysql_password: "{{ lookup('password', seafile_local_storage_path + '/mysql_user_pw length=25') }}"
+seafile_mysql_user: seafile
+seafile_mysql_host: 127.0.0.1
+seafile_mysql_port: 3306
+seafile_database_prefix: 'seafile_'
+
+# superuser settings
+# required if this role should add database user for seafile
+seafile_create_db_user: False
+seafile_create_database: False
+seafile_init_database: False
+seafile_login_host: 'localhost'
+seafile_login_user: 'root'
+seafile_login_user_password: ''
+
+# network ports
+seafile_fileserver_port: 8082
+seafile_webdav_port: 8080
+seafile_http_port: 8000
+
+# url settings
+seafile_ip_or_domain: "{{ inventory_hostname }}"
+seafile_service_url: http://{{ seafile_ip_or_domain }}:{{ seafile_http_port }}
+seafile_file_server_root: http://{{ seafile_ip_or_domain }}:{{ seafile_fileserver_port }}
+
+# misc
+# default user quota in GB, integer only
+seafile_default_quota: 2
+seafile_timezone: Europe/Zurich
+seafile_fast_cgi: False
+

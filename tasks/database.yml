@@ -1,0 +1,35 @@
+       
+- name: mysql client config
+  template:
+    src: my.cnf.j2
+    dest: "{{ seafile_home_path }}/.my.cnf"
+    owner: "{{ seafile_user }}"
+    group: "{{ seafile_group }}"
+    mode: 0400
+    
+
+- name: create mysql databases
+  mysql_db: 
+    name: "{{ item }}" 
+    state: present
+    encoding: utf8
+    login_host: "{{ seafile_mysql_host }}"
+    login_user: "{{ seafile_mysql_user }}"
+    login_password: "{{ seafile_mysql_password }}"
+  with_items: 
+  - "{{ seafile_database_prefix }}ccnet"
+  - "{{ seafile_database_prefix }}seafile"
+  - "{{ seafile_database_prefix }}seahub" 
+  register: __seafile_database_create
+  when: seafile_create_database
+
+
+- name: import initial dump
+  mysql_db: 
+    name: "{{ seafile_database_prefix }}seahub"
+    state: import
+    login_host: "{{ seafile_mysql_host }}"
+    login_user: "{{ seafile_mysql_user }}"
+    login_password: "{{ seafile_mysql_password }}"
+    target: "/{{ seafile_installation_path }}/seahub/sql/mysql.sql"
+  when: __seafile_database_create.changed or seafile_init_database

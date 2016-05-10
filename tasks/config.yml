@@ -1,0 +1,54 @@
+
+
+- name: create ccnet-conf
+  template: 
+    src: ccnet.conf.j2
+    dest: "{{ seafile_configuration_path }}/ccnet.conf"
+
+
+- name: create seafile-conf
+  template: 
+    src: seafile.conf.j2
+    dest: "{{ seafile_configuration_path }}/seafile.conf"    
+
+
+- name: create seafile ini
+  template: 
+    src: seafile.ini.j2
+    dest: "{{ seafile_configuration_path }}/seafile.ini"    
+
+
+- name: create seahub settings
+  template: 
+    src: seahub_settings.py.j2
+    dest: "{{ seafile_configuration_path }}/seahub_settings.py"   
+  notify:
+  - restart seafile
+   
+   
+- name: link key and ini to ccnet directory
+  file:
+    src: "{{ seafile_configuration_path }}/{{ item }}"
+    path: "{{ seafile_configuration_path_ccnet }}/{{ item }}"
+    state: link
+  with_items:
+  - mykey.peer
+  - seafile.ini
+
+
+- name: admin creation script
+  template:
+    src: init_admin.py
+    dest: "{{ seafile_installation_path }}/init_admin.py"
+  register: _seafile_admin_bootstrapped
+
+
+- name: provision admin user
+  shell: cd {{ seafile_home_path }} &&
+         source env.sh &&
+         /usr/bin/env python {{ seafile_installation_path }}/init_admin.py
+    executable=/bin/bash
+  register: seafile_init_admin
+  when: _seafile_admin_bootstrapped.changed
+
+  

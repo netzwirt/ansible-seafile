@@ -1,0 +1,121 @@
+---
+# tasks file for netzwirt.seafile
+
+- name: create group for seafile
+  group: 
+    name: "{{ seafile_group }}"
+    state: present
+
+
+- name: create system-user for seafile
+  user: 
+    name: "{{ seafile_user }}"
+    group: "{{ seafile_group }}"
+    home: "{{ seafile_home_path }}"
+    system: yes
+    state: present
+
+
+- name: install required packages
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+  - wget
+  - python-setuptools 
+  - python-simplejson 
+  - python-imaging 
+  - python-mysqldb
+  - memcached 
+  - python-memcache 
+  - pwgen 
+  - curl 
+  - openssl
+  - mysql-client
+
+
+- name: prepare folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ seafile_user }}"
+    group: "{{ seafile_group }}"
+  with_items:
+  - "{{ seafile_home_path }}"
+  - "{{ seafile_data_dir }}"
+  - "{{ seafile_configuration_path_ccnet }}"
+  - "{{ seafile_log_dir }}"
+  
+
+- include: download.yml
+
+- include: preconfigure.yml
+
+- include: database_user.yml
+  when: seafile_create_db_user # mysql user can be skipped by config
+
+- include: database.yml
+
+- include: config.yml
+
+- name: set owner
+  file:
+    path: "{{ seafile_home_path }}"
+    owner: "{{ seafile_user }}"
+    group: "{{ seafile_group }}"
+    recurse: yes
+  changed_when: False
+
+
+- name: fix permissions
+  file:
+    path: "{{ item }}"
+    owner: "{{ seafile_user }}"
+    group: "{{ seafile_group }}"
+    mode: 0700
+  with_items:
+  - "{{ seafile_configuration_path }}"
+  - "{{ seafile_configuration_path_ccnet}}"
+  - "{{ seafile_data_dir }}"
+  - "{{ seafile_log_dir }}"
+  - "{{ seafile_pids_path }}"
+  
+
+- name: link initscripts to init.d
+  file: 
+    src: "{{ seafile_installation_link }}/{{ item }}.sh"
+    dest: "/etc/init.d/{{ item }}"
+    state: link
+  register: __seafile_init_scripts
+  notify:
+  - restart seafile
+  with_items:
+  - seafile
+  - seahub
+
+- name: enable service
+  service:
+    name: "{{ item }}"
+    enabled: True
+  when: __seafile_init_scripts.changed
+  with_items:
+  - seafile
+  - seahub
+
+- name: logrotate config
+  template:
+    src: logrotate.j2
+    dest: /etc/logrotate.d/seafile
+    owner: root
+    group: root
+    mode: 0644
+
+
+- name: ensure service is running
+  service:
+    name: "{{ item }}"
+    state: started
+  ignore_errors: yes # init script returns non zero when allready running
+  with_items:
+  - seafile
+  - seahub    

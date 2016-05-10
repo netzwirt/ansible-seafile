@@ -1,0 +1,21 @@
+# {{ ansible_managed }}
+
+[fileserver]
+# bind address for fileserver, default to 0.0.0.0
+host = 0.0.0.0
+# tcp port for fileserver
+port = {{ seafile_fileserver_port }}
+
+[database]
+type = mysql
+host = {{ seafile_mysql_host }}
+port = {{ seafile_mysql_port }}
+user = {{ seafile_mysql_user }}
+password = {{ seafile_mysql_password }}
+db_name = {{ seafile_database_prefix }}seafile
+connection_charset = utf8
+
+[quota]
+# default user quota in GB, integer only
+default = {{ seafile_default_quota }}
+

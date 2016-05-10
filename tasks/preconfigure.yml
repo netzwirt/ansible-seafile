@@ -1,0 +1,52 @@
+
+
+# create environment file
+
+- name: seafile environment
+  template:
+    src: env.sh.j2
+    dest: "{{ seafile_home_path }}/env.sh"
+    owner: "{{ seafile_user }}"
+    group: "{{ seafile_group }}"
+
+
+- name: seafile bashrc
+  file: 
+    path: "{{ seafile_home_path }}/.bashrc"
+    state: touch
+    owner: "{{ seafile_user }}"
+    group: "{{ seafile_group }}"
+  changed_when: False
+  
+
+- name: ensure environment is loaded in bashrc
+  lineinfile: 
+    dest: "{{ seafile_home_path }}/.bashrc" 
+    regexp: "^source .*env.sh$"
+    line: "source ~/env.sh"
+
+
+# prepare ccnet config
+
+- name: check for config
+  stat: 
+    path: "{{ seafile_configuration_path }}/ccnet.conf"
+  register: _seafile_config
+
+
+- name: generate ccnet config
+  shell: LD_LIBRARY_PATH={{ seafile_ld_library_path }}:${LD_LIBRARY_PATH}
+         {{ seafile_ccnet_init }} -c {{ seafile_configuration_path }} -H {{ seafile_ip_or_domain }} -n {{seafile_user}} 
+  when: _seafile_config.stat.exists == False
+
+
+- name: register ccnet key-id
+  shell: grep ID {{ seafile_configuration_path }}/ccnet.conf | cut -d= -f2
+  register: _seafile_ccnet_id
+  changed_when: False
+  failed_when: _seafile_ccnet_id.stdout == "" or _seafile_ccnet_id.stderr != ""
+  
+
+
+  
+  

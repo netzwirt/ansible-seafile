@@ -1,0 +1,18 @@
+---
+# handlers file for netzwirt.seafile
+
+- name: start seafile
+  service:
+    name: "{{ item }}"
+    state: started
+  with_items:
+  - seafile
+  - seahub
+    
+- name: restart seafile
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+  - seafile
+  - seahub    

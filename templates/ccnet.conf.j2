@@ -1,0 +1,26 @@
+# {{ ansible_managed }}
+
+[General]
+
+# Used internally. Don't delete.
+ID = {{ _seafile_ccnet_id.stdout|trim }}
+
+# Used internally. Don't delete.
+NAME = {{ seafile_organisation }}
+
+# This is outside URL for Seahub(Seafile Web). 
+# The domain part (i.e., www.example.com) will be used in generating share links and download/upload file via web.
+# Note: Outside URL means "if you use Nginx, it should be the Nginx's address"
+SERVICE_URL = {{ seafile_service_url }}
+
+[Client]
+Port = 13419
+
+[Database]
+ENGINE = mysql
+HOST = {{ seafile_mysql_host }}
+USER = {{ seafile_mysql_user }}
+PASSWD = {{ seafile_mysql_password }}
+PORT = {{ seafile_mysql_port }}
+DB = {{ seafile_database_prefix }}ccnet
+CONNECTION_CHARSET=utf8

@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# {{ ansible_managed }}
+
+### BEGIN INIT INFO
+# Provides:      seafile-server
+# Required-Start:    $remote_fs $syslog mysql
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Seafile server
+# Description:       Start Seafile server
+### END INIT INFO
+
+# Author: Alexander Jackson <alexander.jackson@seafile.de>
+#
+# Change the value of "user" to your linux user name
+user=seafile
+
+# source seaafile env
+source {{ seafile_home_path }}/env.sh
+
+# Change the value of "seafile_dir" to your path of seafile installation
+seafile_dir={{ seafile_home_path }}
+script_path={{ seafile_installation_link }}
+seafile_init_log=${seafile_dir}/logs/seafile.init.log
+seahub_init_log=${seafile_dir}/logs/seahub.init.log
+
+# Change the value of fastcgi to true if fastcgi is to be used
+fastcgi={{ seafile_fast_cgi|lower }}
+
+# Set the port of fastcgi, default is 8000. Change it if you need different.
+fastcgi_port=8000
+
+case "$1" in
+    start)
+        sudo -u ${user} ${script_path}/seafile.sh start >> ${seafile_init_log}
+        if [  $fastcgi = true ];
+        then
+            sudo -u ${user} ${script_path}/seahub.sh start-fastcgi ${fastcgi_port} >> ${seahub_init_log}
+        else
+            sudo -u ${user} ${script_path}/seahub.sh start >> ${seahub_init_log}
+        fi
+    ;;
+    restart)
+        sudo -u ${user} ${script_path}/seafile.sh restart >> ${seafile_init_log}
+        if [  $fastcgi = true ];
+        then
+            sudo -u ${user} ${script_path}/seahub.sh restart-fastcgi ${fastcgi_port} >> ${seahub_init_log}
+        else
+            sudo -u ${user} ${script_path}/seahub.sh restart >> ${seahub_init_log}
+        fi
+    ;;
+    stop)
+        sudo -u ${user} ${script_path}/seafile.sh $1 >> ${seafile_init_log}
+        sudo -u ${user} ${script_path}/seahub.sh $1 >> ${seahub_init_log}
+    ;;
+    *)
+        echo "Usage: /etc/init.d/seafile {start|stop|restart}"
+        exit 1
+    ;;
+esac
+
+exit 0

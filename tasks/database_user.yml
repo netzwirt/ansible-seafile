@@ -1,0 +1,19 @@
+
+
+
+- name: grant privileges to seafile user
+  mysql_user: 
+    name: "{{ seafile_mysql_user }}" 
+    password: "{{ seafile_mysql_password }}"
+    host: "{{ seafile_mysql_host }}"
+    state: present 
+    priv: "{{ item }}.*:ALL"
+    login_host: "{{ seafile_login_host }}"
+    login_user: "{{ seafile_login_user }}"
+    login_password: "{{ seafile_login_user_password }}"
+    append_privs: True
+  with_items: 
+  - "{{ seafile_database_prefix }}ccnet"
+  - "{{ seafile_database_prefix }}seafile"
+  - "{{ seafile_database_prefix }}seahub" 
+      

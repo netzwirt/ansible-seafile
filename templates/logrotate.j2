@@ -1,0 +1,29 @@
+# {{ ansible_managed }}
+
+{{ seafile_log_dir }}/seafile.log
+{
+        daily
+        missingok
+        rotate 52
+        compress
+        delaycompress
+        notifempty
+        sharedscripts
+        postrotate
+                [ ! -f {{ seafile_pids_path }}/seaf-server.pid ] || kill -USR1 `cat {{ seafile_pids_path }}/seaf-server.pid`
+        endscript
+}
+
+{{ seafile_log_dir }}/ccnet.log
+{
+        daily
+        missingok
+        rotate 52
+        compress
+        delaycompress
+        notifempty
+        sharedscripts
+        postrotate
+                [ ! -f {{ seafile_pids_path }}/ccnet.pid ] || kill -USR1 `cat {{ seafile_pids_path }}/ccnet.pid`
+        endscript
+}

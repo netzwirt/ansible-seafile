@@ -1,0 +1,29 @@
+
+- name: download seafile
+  get_url: 
+    url: https://bintray.com/artifact/download/seafile-org/seafile/seafile-server_{{ seafile_version }}_x86-64.tar.gz
+    dest: /tmp/
+  register: _seafile_download
+
+
+- name: check installed version
+  stat:
+    path: "{{ seafile_installation_path }}"
+  register: _seafile_installed
+
+
+- name: unarchive downloaded file
+  unarchive: 
+    src: "{{ _seafile_download.dest }}"
+    dest: "{{ seafile_home_path }}"
+    copy: no
+  when: _seafile_installed.stat.exists == False
+
+
+- name: link seafile to current
+  file:
+    src: "{{ seafile_installation_path }}"
+    path: "{{ seafile_installation_link }}"
+    state: link
+
+    

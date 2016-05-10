@@ -1,0 +1,19 @@
+---
+# vars file for netzwirt.seafile
+
+seafile_configuration_path: "{{seafile_home_path}}/conf"
+seafile_configuration_path_ccnet: "{{seafile_home_path}}/ccnet"
+seafile_installation_path: "{{seafile_home_path}}/seafile-server-{{seafile_version}}"
+seafile_installation_link: "{{seafile_home_path}}/current"
+
+
+seafile_ld_library_path: "{{ seafile_installation_path }}/seafile/lib/:{{ seafile_installation_path }}/seafile/lib64"
+seafile_python_library_path: "{{ seafile_installation_path }}/seahub/thirdpart:{{ seafile_installation_path }}/seafile/lib64/python2.6/site-packages:{{ seafile_installation_path }}/seafile/lib64/python2.7/site-packages"
+seafile_ccnet_init: "{{ seafile_installation_path }}/seafile/bin/ccnet-init"
+seafile_seafsrv_init: "{{ seafile_installation_path }}/seafile/bin/seaf-server-init"
+
+
+seafile_data_dir: "{{seafile_home_path}}/data"
+seafile_log_dir: "{{seafile_home_path}}/logs"
+seafile_pids_path: "{{seafile_home_path}}/pids"
+
