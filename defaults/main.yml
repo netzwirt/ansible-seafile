@@ -46,3 +46,6 @@ seafile_default_quota: 2
 seafile_timezone: Europe/Zurich
 seafile_fast_cgi: False
 
+# list with users to create
+# password is generated and stored under {{ seafile_local_storage_path }}/{{ username }}
+seafile_create_users: []
