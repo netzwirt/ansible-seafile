@@ -63,7 +63,7 @@
     path: "{{ seafile_home_path }}"
     owner: "{{ seafile_user }}"
     group: "{{ seafile_group }}"
-    recurse: yes
+    recurse: no
   changed_when: False
 
 
