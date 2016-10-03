@@ -30,6 +30,15 @@ seafile_login_host: 'localhost'
 seafile_login_user: 'root'
 seafile_login_user_password: ''
 
+# ldap users
+seafile_ldap_enable: False
+seafile_ldap_host: ldap://localhost/
+seafile_ldap_base: ou=people,dc=example,dc=com
+seafile_ldap_userdn: cn=admin,dc=example,dc=com
+seafile_ldap_password: changeme
+seafile_ldap_login_attr: mail
+seafile_ldap_filter:
+
 # network ports
 seafile_fileserver_port: 8082
 seafile_webdav_port: 8080

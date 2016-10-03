@@ -24,3 +24,13 @@ PASSWD = {{ seafile_mysql_password }}
 PORT = {{ seafile_mysql_port }}
 DB = {{ seafile_database_prefix }}ccnet
 CONNECTION_CHARSET=utf8
+
+{% if seafile_ldap_enable is defined and seafile_ldap_enable %}
+[LDAP]
+HOST = {{ seafile_ldap_host }}
+BASE = {{ seafile_ldap_base }}
+USER_DN = {{ seafile_ldap_userdn }}
+PASSWORD = {{ seafile_ldap_password }}
+LOGIN_ATTR = {{ seafile_ldap_login_attr }}
+FILTER = {{ seafile_ldap_filter }}
+{% endif %}
