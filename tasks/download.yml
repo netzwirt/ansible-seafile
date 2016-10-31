@@ -1,15 +1,16 @@
 
+- name: check installed version
+  stat:
+    path: "{{ seafile_installation_path }}"
+  register: _seafile_installed
+
+
 - name: download seafile
   get_url: 
     url: https://bintray.com/artifact/download/seafile-org/seafile/seafile-server_{{ seafile_version }}_x86-64.tar.gz
     dest: /tmp/
   register: _seafile_download
-
-
-- name: check installed version
-  stat:
-    path: "{{ seafile_installation_path }}"
-  register: _seafile_installed
+  when: _seafile_installed.stat.exists == False
 
 
 - name: unarchive downloaded file

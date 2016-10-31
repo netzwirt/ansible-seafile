@@ -36,7 +36,7 @@
 
 - name: generate ccnet config
   shell: LD_LIBRARY_PATH={{ seafile_ld_library_path }}:${LD_LIBRARY_PATH}
-         {{ seafile_ccnet_init }} -c {{ seafile_configuration_path }} -H {{ seafile_ip_or_domain }} -n {{seafile_user}} 
+         {{ seafile_ccnet_init }} -c {{ seafile_configuration_path }} -H {{ seafile_ip_or_domain }} -n {{ seafile_user }} 
   when: _seafile_config.stat.exists == False
 
 

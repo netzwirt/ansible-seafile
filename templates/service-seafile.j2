@@ -1,0 +1,14 @@
+[Unit]
+Description=Seafile
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart={{ seafile_home_path }}/current/seafile.sh start
+ExecStop={{ seafile_home_path }}/current/seafile.sh stop
+RemainAfterExit=yes
+User=seafile
+Group=seafile
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,57 @@
+
+# Systemd related configuration
+- name: Install systemd services
+  template: 
+    src: "service-{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}.service"
+  when: ansible_service_mgr == 'systemd'
+  with_items:
+  - seafile
+  - seahub
+
+- name: activate systemd services
+  systemd: 
+    state: started
+    daemon_reload: yes
+    name: "{{ item }}"
+  when: ansible_service_mgr == 'systemd'
+  with_items:
+  - seafile
+  - seahub
+  
+
+# sysvinit related configuration
+- name: link initscripts to init.d
+  file: 
+    src: "{{ seafile_installation_link }}/{{ item }}.sh"
+    dest: "/etc/init.d/{{ item }}"
+    state: link
+  register: __seafile_init_scripts
+  notify:
+  - restart seafile
+  when: ansible_service_mgr != 'systemd'
+  with_items:
+  - seafile
+  - seahub
+
+- name: enable service
+  service:
+    name: "{{ item }}"
+    enabled: True
+  when: __seafile_init_scripts.changed and ansible_service_mgr != 'systemd'
+  with_items:
+  - seafile
+  - seahub
+
+- name: ensure service is running
+  service:
+    name: "{{ item }}"
+    state: started
+  ignore_errors: yes # init script returns non zero when allready running
+  when: ansible_service_mgr != 'systemd'
+  with_items:
+  - seafile
+  - seahub    
+
+
+

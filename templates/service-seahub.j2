@@ -1,0 +1,15 @@
+[Unit]
+Description=Seafile hub
+After=network.target seafile.service
+
+[Service]
+# change start to start-fastcgi if you want to run fastcgi
+ExecStart={{ seafile_home_path }}/current/seahub.sh start
+ExecStop={{ seafile_home_path }}/current/seahub.sh stop
+User=seafile
+Group=seafile
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
