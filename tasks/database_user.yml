@@ -1,11 +1,26 @@
 
 
-
-- name: grant privileges to seafile user
+- name: grant privileges to seafile user (delegate mysql task)
   mysql_user: 
     name: "{{ seafile_mysql_user }}" 
     password: "{{ seafile_mysql_password }}"
-    host: "{{ seafile_mysql_host }}"
+    host: "{{ ansible_default_ipv4.address }}"
+    state: present 
+    priv: "{{ item }}.*:ALL"
+    append_privs: True
+  delegate_to: "{{ seafile_login_host }}"
+  with_items: 
+  - "{{ seafile_database_prefix }}ccnet"
+  - "{{ seafile_database_prefix }}seafile"
+  - "{{ seafile_database_prefix }}seahub" 
+  when: seafile_delegate_to_login_host
+ 
+
+- name: grant privileges to seafile user (connect to remote mysql server)
+  mysql_user: 
+    name: "{{ seafile_mysql_user }}" 
+    password: "{{ seafile_mysql_password }}"
+    host: "{{ ansible_default_ipv4.address }}"
     state: present 
     priv: "{{ item }}.*:ALL"
     login_host: "{{ seafile_login_host }}"
@@ -16,4 +31,5 @@
   - "{{ seafile_database_prefix }}ccnet"
   - "{{ seafile_database_prefix }}seafile"
   - "{{ seafile_database_prefix }}seahub" 
+  when: not seafile_delegate_to_login_host
       

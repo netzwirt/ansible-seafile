@@ -29,6 +29,8 @@ seafile_init_database: False
 seafile_login_host: 'localhost'
 seafile_login_user: 'root'
 seafile_login_user_password: ''
+# instead of using login/pass, use task delegation to login_host
+seafile_delegate_to_login_host: false
 
 # ldap users
 seafile_ldap_enable: False
@@ -58,3 +60,4 @@ seafile_fast_cgi: False
 # list with users to create
 # password is generated and stored under {{ seafile_local_storage_path }}/{{ username }}
 seafile_create_users: []
+

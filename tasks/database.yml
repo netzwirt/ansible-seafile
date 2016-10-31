@@ -8,20 +8,34 @@
     mode: 0400
     
 
-- name: create mysql databases
+- name: create mysql databases (delegate mysql task)
   mysql_db: 
     name: "{{ item }}" 
     state: present
     encoding: utf8
-    login_host: "{{ seafile_mysql_host }}"
-    login_user: "{{ seafile_mysql_user }}"
-    login_password: "{{ seafile_mysql_password }}"
+  delegate_to: "{{ seafile_login_host }}"
   with_items: 
   - "{{ seafile_database_prefix }}ccnet"
   - "{{ seafile_database_prefix }}seafile"
   - "{{ seafile_database_prefix }}seahub" 
   register: __seafile_database_create
-  when: seafile_create_database
+  when: seafile_create_database and seafile_delegate_to_login_host
+
+
+- name: create mysql databases (connect to remote mysql server)
+  mysql_db: 
+    name: "{{ item }}" 
+    state: present
+    encoding: utf8
+    login_host: "{{ seafile_login_host }}"
+    login_user: "{{ seafile_login_user }}"
+    login_password: "{{ seafile_login_user_password }}"
+  with_items: 
+  - "{{ seafile_database_prefix }}ccnet"
+  - "{{ seafile_database_prefix }}seafile"
+  - "{{ seafile_database_prefix }}seahub" 
+  register: __seafile_database_create
+  when: seafile_create_database and not seafile_delegate_to_login_host
 
 
 - name: import initial dump
