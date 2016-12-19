@@ -13,6 +13,7 @@ seafile_group: seafile
 seafile_organisation: Seafile
 seafile_home_path: /opt/seafile
 
+seafile_chown_data_dir: True
 
 # mysql settings
 seafile_mysql_password: "{{ lookup('password', seafile_local_storage_path + '/mysql_user_pw length=25') }}"

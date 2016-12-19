@@ -66,6 +66,7 @@
     group: "{{ seafile_group }}"
     recurse: yes
   changed_when: False
+  when: seafile_chown_data_dir
 
 
 - name: fix permissions
