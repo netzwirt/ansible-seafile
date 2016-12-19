@@ -69,5 +69,7 @@
 - name: create seafile users
   command: "{{ seafile_installation_path }}/create_user.sh {{ item }} {{ lookup('password', seafile_local_storage_path + '/' + item + ' length=18') }}"
   with_items: "{{ seafile_create_users }}"
+  tags:
+  - seafile-users
   
   
