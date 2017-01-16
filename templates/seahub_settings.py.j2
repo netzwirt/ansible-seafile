@@ -13,7 +13,7 @@ DATABASES = {
         'HOST': '{{ seafile_mysql_host }}',
         'PORT': '{{ seafile_mysql_port }}',
         'OPTIONS': {
-            'init_command': 'SET storage_engine=INNODB',
+            'init_command': 'SET default_storage_engine=INNODB',
         }
     }
 }
