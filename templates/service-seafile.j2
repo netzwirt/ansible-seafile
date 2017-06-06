@@ -3,6 +3,7 @@ Description=Seafile
 After=network.target
 
 [Service]
+EnvironmentFile={{ seafile_home_path }}/env.sh
 Type=oneshot
 ExecStart={{ seafile_home_path }}/current/seafile.sh start
 ExecStop={{ seafile_home_path }}/current/seafile.sh stop
